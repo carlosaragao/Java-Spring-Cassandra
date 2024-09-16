@@ -1,6 +1,7 @@
 package com.talkevents.cassandra.services;
 
 import com.talkevents.cassandra.models.User;
+import com.talkevents.cassandra.repositories.AddressRepository;
 import com.talkevents.cassandra.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -30,12 +31,13 @@ public class UserService {
     }
 
     public void update(User user) {
-        var userToUpdate = userRepository.findById(user.getId())
-            .orElseThrow(() -> new RuntimeException("User not found with id " + user.getId()));
-        userToUpdate.setName(user.getName());
-        userToUpdate.setAge(user.getAge());
-        userToUpdate.setEmail(user.getEmail());
-        userRepository.save(user);
+        User userToUpdate = getById(user.getId());
+        if (userToUpdate != null) {
+            userToUpdate.setName(user.getName());
+            userToUpdate.setAge(user.getAge());
+            userToUpdate.setEmail(user.getEmail());
+            user.setAddressId(user.getAddressId());
+        }
     }
 
     public void delete(UUID id) {
